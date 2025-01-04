@@ -1,3 +1,7 @@
+/**
+ * Property model.
+ * @paulyhedral
+ */
 use serde::{Serialize, Deserialize};
 
 /// Struct for properties.
