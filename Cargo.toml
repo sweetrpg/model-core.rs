@@ -10,6 +10,13 @@ homepage = "https://github.com/sweetrpg/model-core"
 keywords = ["sweetrpg", "model", "core"]
 categories = ["game", "rpg", "sweetrpg", "model", "core"]
 authors = ["Paul Schifferer <paul@schifferers.net>"]
+exclude = [
+    "*.orig",
+    ".github/*",
+    ".gitignore",
+    ".rust-version",
+    ".editorconfig",
+]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
