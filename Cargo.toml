@@ -16,6 +16,7 @@ exclude = [
     ".gitignore",
     ".rust-version",
     ".editorconfig",
+    ".cargo_vcs_info.json",
 ]
 
 [dependencies]
