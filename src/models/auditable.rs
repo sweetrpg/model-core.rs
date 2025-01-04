@@ -1,5 +1,9 @@
+/**
+ * Auditable
+ * @paulyhedral
+ */
 use std::option::Option;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Base struct for auditable fields.
 /// The auditable fields are meant to be used as a way of tracking the creation, update, and deletion of records.
@@ -18,7 +22,7 @@ pub struct Auditable {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde::{Serialize, Deserialize};
+    use serde::{Deserialize, Serialize};
 
     #[test]
     fn use_auditable() {
