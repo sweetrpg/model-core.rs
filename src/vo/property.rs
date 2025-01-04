@@ -1,3 +1,7 @@
+/**
+ * Property value object.
+ * @paulyhedral
+ */
 use serde::{Serialize, Deserialize};
 
 /// Value object for properties.
