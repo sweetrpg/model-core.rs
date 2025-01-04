@@ -90,7 +90,7 @@ jobs:
               with:
                   fetch-depth: 0
             - name: Bump version and push tag
-              id: bump_tag
+              id: bump_version
               uses: anothrNick/github-tag-action@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -98,10 +98,14 @@ jobs:
                   DEFAULT_BUMP: patch
             - name: Update Cargo.toml
               run: |
-                    sed -i 's/^version = ".*"$/version = "'${{ steps.bump_tag.outputs.new_tag }}'"/' Cargo.toml
+                    sed -i 's/^version = ".*"$/version = "'${{ steps.bump_version.outputs.new_tag }}'"/' Cargo.toml
             - name: Commit and push
               run: |
-                    echo "hello"
+                    git config --global user.email "ci@sweetrpg.com"
+                    git config --global user.name "SweetRPG CI"
+                    git add Cargo.toml
+                    git commit -m "Update Cargo.toml with version: ${{ github.ref_name }}"
+                    git push origin
 
     publish:
         needs: [tag]
