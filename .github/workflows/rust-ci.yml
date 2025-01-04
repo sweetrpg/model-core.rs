@@ -7,7 +7,6 @@ on:
         branches: [develop]
         paths:
             - "src/**/*.rs"
-            - Cargo.toml
             - .rust-version
     workflow_dispatch:
     repository_dispatch:
@@ -91,11 +90,18 @@ jobs:
               with:
                   fetch-depth: 0
             - name: Bump version and push tag
+              id: bump_tag
               uses: anothrNick/github-tag-action@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   WITH_V: true
                   DEFAULT_BUMP: patch
+            - name: Update Cargo.toml
+              run: |
+                    sed -i 's/^version = ".*"$/version = "'${{ steps.bump_tag.outputs.new_tag }}'"/' Cargo.toml
+            - name: Commit and push
+              run: |
+                    echo "hello"
 
     publish:
         needs: [tag]
@@ -108,10 +114,8 @@ jobs:
             - name: Get latest tag
               id: get_latest_tag
               uses: actions-ecosystem/action-get-latest-tag@v1
-            # - name: Publish
-            #   env:
-            #     GOPROXY: proxy.golang.org
-            #   run: go list -m github.com/sweetrpg/common@${{ steps.get_latest_tag.outputs.tag }}
+            - name: Publish
+              run: cargo publish --token ${{ secrets.CRATES_API_KEY }}
 
     notify:
         needs: [tag]
@@ -121,22 +125,33 @@ jobs:
             matrix:
                 include:
                     - repo: api-core.rs
+                    - repo: catalog-api
                     - repo: catalog-data.rs
+                    - repo: catalog-data-processor
                     - repo: catalog-objects.rs
+                    - repo: catalog-web
                     - repo: client.rs
+                    - repo: data-api
                     - repo: data-objects.rs
                     - repo: db.rs
+                    - repo: initiative-api
                     - repo: initiative-data.rs
                     - repo: initiative-objects.rs
-                    - repo: kv-api.rs
+                    - repo: initiative-web
+                    - repo: kv-api
                     - repo: kv-data.rs
                     - repo: kv-expression-processor
                     - repo: kv-key-processor
                     - repo: kv-objects.rs
                     - repo: kv-value-calculator
+                    - repo: kv-web
+                    - repo: library-api
                     - repo: library-data.rs
                     - repo: library-objects.rs
+                    - repo: library-web
+                    - repo: main-web
                     - repo: model-core.rs
+                    - repo: shared-web
                     - repo: web-core.rs
         steps:
             - uses: juztcode/repo-ditpatch-action@v1
