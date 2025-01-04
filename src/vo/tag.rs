@@ -1,3 +1,7 @@
+/**
+ * Tag value object.
+ * @paulyhedral
+ */
 use serde::{Serialize, Deserialize};
 
 /// A value object representing a tag.
