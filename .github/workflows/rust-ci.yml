@@ -36,11 +36,8 @@ jobs:
                   v=$(cat .rust-version)
                   echo "lang_version=$v" >> $GITHUB_OUTPUT
           - name: Install Rust
-            # Or @nightly if you want
             uses: dtolnay/rust-toolchain@stable
-            # Arguments to pass in
             with:
-              # Make Rust compile to our target (defined in the matrix)
               targets: ${{ matrix.target }}
               # rust-version: ${{ steps.get_lang_version.outputs.lang_version }}
           - name: Build
@@ -61,24 +58,30 @@ jobs:
                 github_token: ${{ secrets.GITHUB_TOKEN }}
                 publish_dir: ./coverage
 
-    #    docs:
-    #        needs: [tests]
-    #        runs-on: ubuntu-latest
-    #        concurrency: docs
-    #        steps:
-    #            - uses: actions/checkout@v4
-    #            - uses: actions/setup-python@v5
-    #              with:
-    #                  python-version: "3.11"
-    #            - name: install-deps
-    #              run: pip install -r requirements/docs.txt
-    #            - name: make-docs
-    #              run: cd docs && make html
-    #            - name: publish-docs
-    #              uses: peaceiris/actions-gh-pages@v4
-    #              with:
-    #                  github_token: ${{ secrets.GITHUB_TOKEN }}
-    #                  publish_dir: ./docs/_build/html
+    docs:
+        needs: [tests]
+        runs-on: ubuntu-latest
+        concurrency: docs
+        steps:
+            - uses: actions/checkout@v4
+            - name: Get language version
+              id: get_lang_version
+              run: |
+                    v=$(cat .rust-version)
+                    echo "lang_version=$v" >> $GITHUB_OUTPUT
+            - name: Install Rust
+              uses: dtolnay/rust-toolchain@stable
+              # with:
+              #   targets: ${{ matrix.target }}
+              #   rust-version: ${{ steps.get_lang_version.outputs.lang_version }}
+            - name: Make docs
+              run: |
+                    cargo doc
+            - name: Publish docs
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: ./target/doc/sweetrpg_model_core/
 
     tag:
         needs: [tests]
@@ -94,7 +97,7 @@ jobs:
               uses: anothrNick/github-tag-action@v1
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  WITH_V: true
+                  WITH_V: false
                   DEFAULT_BUMP: patch
             - name: Update Cargo.toml
               run: |
@@ -104,7 +107,7 @@ jobs:
                     git config --global user.email "ci@sweetrpg.com"
                     git config --global user.name "SweetRPG CI"
                     git add Cargo.toml
-                    git commit -m "Update Cargo.toml with version: ${{ github.ref_name }}"
+                    git commit -m "Update Cargo.toml on ${{ github.ref_name }} with version: ${{ steps.bump_version.outputs.new_tag }}"
                     git push origin
 
     publish:
@@ -119,7 +122,8 @@ jobs:
               id: get_latest_tag
               uses: actions-ecosystem/action-get-latest-tag@v1
             - name: Publish
-              run: cargo publish --token ${{ secrets.CRATES_API_KEY }}
+              run: |
+                    cargo publish --token ${{ secrets.CRATES_API_KEY }}
 
     notify:
         needs: [tag]
