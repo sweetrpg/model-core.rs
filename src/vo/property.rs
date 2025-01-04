@@ -1,6 +1,8 @@
 use serde::{Serialize, Deserialize};
 
 /// Value object for properties.
+/// Properties are name/kind/value triplets, meant to be used as a way of adding arbitrary data
+/// to other objects.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PropertyVO {
     pub name: String,

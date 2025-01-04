@@ -1,6 +1,7 @@
 use serde::{Serialize, Deserialize};
 
 /// A value object representing a tag.
+/// The tag is a name/value pair, meant to be used as a way of labeling or categorizing things.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TagVO {
     pub name: String,

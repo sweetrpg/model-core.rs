@@ -2,6 +2,7 @@ use std::option::Option;
 use serde::{Serialize, Deserialize};
 
 /// A value object representing auditable fields.
+/// The auditable fields are meant to be used as a way of tracking the creation, update, and deletion of records.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AuditableVO {
     pub created_at: u64,
