@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/sweetrpg/model-core.rs"
 homepage = "https://github.com/sweetrpg/model-core"
 keywords = ["sweetrpg", "model", "core"]
-categories = ["game", "rpg", "sweetrpg", "model", "core"]
+categories = ["data-structures"]
 authors = ["Paul Schifferer <paul@schifferers.net>"]
 exclude = [
     "*.orig",
