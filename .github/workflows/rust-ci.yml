@@ -50,6 +50,12 @@ jobs:
               use-cross: true
               command: build
               args: --verbose --release --target ${{ matrix.target }}
+          - name: Test
+            uses: actions-rs/cargo@v1
+            with:
+              use-cross: true
+              command: test
+              args: --verbose --release --target ${{ matrix.target }}
           - name: publish-docs
             uses: peaceiris/actions-gh-pages@v4
             with:

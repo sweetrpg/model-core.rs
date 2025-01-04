@@ -1,6 +1,8 @@
-///
-#[derive(Debug)]
+use serde::{Serialize, Deserialize};
+
+/// A struct for tags.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Tag {
-    name: String,
-    value: String,
+    pub name: String,
+    pub value: String,
 }

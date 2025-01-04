@@ -1,7 +1,15 @@
 [package]
 name = "sweetrpg-model-core"
+description = "Core model definitions for SweetRPG"
 version = "0.0.1"
 edition = "2021"
+license-file = "LICENSE"
+readme = "README.md"
+repository = "https://github.com/sweetrpg/model-core.rs"
+homepage = "https://github.com/sweetrpg/model-core"
+keywords = ["sweetrpg", "model", "core"]
+categories = ["game", "rpg", "sweetrpg", "model", "core"]
+authors = ["Paul Schifferer <paul@schifferers.net>"]
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }

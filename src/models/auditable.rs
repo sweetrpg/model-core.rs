@@ -1,13 +1,13 @@
-use std::time::Instant;
 use std::option::Option;
+use serde::{Serialize, Deserialize};
 
-///
-#[derive(Debug)]
+/// Base struct for auditable fields.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Auditable {
-    created_at: Instant,
-    created_by: String,
-    updated_at: Instant,
-    updated_by: String,
-    deleted_at: Option<Instant>,
-    deleted_by: Option<String>,
+    pub created_at: u64,
+    pub created_by: String,
+    pub updated_at: u64,
+    pub updated_by: String,
+    pub deleted_at: Option<u64>,
+    pub deleted_by: Option<String>,
 }

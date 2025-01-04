@@ -1,7 +1,9 @@
-///
-#[derive(Debug)]
+use serde::{Serialize, Deserialize};
+
+/// Struct for properties.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Property {
-    name: String,
-    kind: String,
-    value: String,
+    pub name: String,
+    pub kind: String,
+    pub value: String,
 }
