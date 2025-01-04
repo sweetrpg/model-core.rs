@@ -1,7 +1,7 @@
-///
+/// Value object for properties.
 #[derive(Debug)]
 pub struct PropertyVO {
-    name: String,
-    kind: String,
-    value: String,
+    pub name: String,
+    pub kind: String,
+    pub value: String,
 }

@@ -114,35 +114,24 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    - repo: api-core
-                    - repo: catalog-api
-                    - repo: catalog-data
-                    - repo: catalog-data-processor
-                    - repo: catalog-objects
-                    - repo: catalog-web
-                    - repo: client
-                    - repo: data-api
-                    - repo: data-objects
-                    - repo: db
-                    - repo: initiative-api
-                    - repo: initiative-data
-                    - repo: initiative-objects
-                    - repo: initiative-web
-                    - repo: kv-api
-                    - repo: kv-data
+                    - repo: api-core.rs
+                    - repo: catalog-data.rs
+                    - repo: catalog-objects.rs
+                    - repo: client.rs
+                    - repo: data-objects.rs
+                    - repo: db.rs
+                    - repo: initiative-data.rs
+                    - repo: initiative-objects.rs
+                    - repo: kv-api.rs
+                    - repo: kv-data.rs
                     - repo: kv-expression-processor
                     - repo: kv-key-processor
-                    - repo: kv-objects
+                    - repo: kv-objects.rs
                     - repo: kv-value-calculator
-                    - repo: kv-web
-                    - repo: library-api
-                    - repo: library-data
-                    - repo: library-objects
-                    - repo: library-web
-                    - repo: main-web
-                    - repo: model-core
-                    - repo: shared-web
-                    - repo: web-core
+                    - repo: library-data.rs
+                    - repo: library-objects.rs
+                    - repo: model-core.rs
+                    - repo: web-core.rs
         steps:
             - uses: juztcode/repo-ditpatch-action@v1
               continue-on-error: true
