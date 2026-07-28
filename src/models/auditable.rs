@@ -6,6 +6,33 @@ use std::option::Option;
 use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 
+// bson::serde_helpers::chrono_datetime_as_bson_datetime only handles a bare
+// DateTime<Utc>, not Option<DateTime<Utc>> - wrap it for the nullable deleted_at field.
+mod option_chrono_datetime_as_bson_datetime {
+    use bson::serde_helpers::chrono_datetime_as_bson_datetime;
+    use chrono::{DateTime, Utc};
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+    pub fn serialize<S>(date: &Option<DateTime<Utc>>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        #[derive(Serialize)]
+        struct Wrapper(#[serde(with = "chrono_datetime_as_bson_datetime")] DateTime<Utc>);
+        date.map(Wrapper).serialize(serializer)
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<DateTime<Utc>>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wrapper(#[serde(with = "chrono_datetime_as_bson_datetime")] DateTime<Utc>);
+        let helper = Option::deserialize(deserializer)?;
+        Ok(helper.map(|Wrapper(dt)| dt))
+    }
+}
+
 /// Base struct for auditable fields.
 /// The auditable fields are meant to be used as a way of tracking the creation, update, and deletion of records.
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -16,7 +43,7 @@ pub struct Auditable {
     #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
     pub updated_at: DateTime<Utc>,
     pub updated_by: String,
-    #[serde(with = "bson::serde_helpers::chrono_datetime_as_bson_datetime")]
+    #[serde(with = "option_chrono_datetime_as_bson_datetime")]
     pub deleted_at: Option<DateTime<Utc>>, // Option to represent nullable BSON fields
     pub deleted_by: Option<String>,
 }
@@ -40,6 +67,7 @@ impl Auditable {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::SubsecRound;
     use serde::{Deserialize, Serialize};
 
     #[test]
@@ -50,7 +78,10 @@ mod tests {
             auditable: Auditable,
         }
 
-        let now = chrono::Utc::now();
+        // bson's chrono_datetime_as_bson_datetime helper round-trips through
+        // BSON's millisecond-precision DateTime, so truncate to match.
+        let now = chrono::Utc::now()
+            .trunc_subsecs(3);
 
         let auditable = AuditableTest {
             some_field: "some value".to_string(),
