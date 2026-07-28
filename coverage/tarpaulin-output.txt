@@ -1,0 +1,27 @@
+[2m2026-07-28T16:33:53.805573Z[0m [32m INFO[0m [2mcargo_tarpaulin::config[0m[2m:[0m Creating config
+[2m2026-07-28T16:33:55.981612Z[0m [32m INFO[0m [2mcargo_tarpaulin[0m[2m:[0m Running Tarpaulin
+[2m2026-07-28T16:33:55.981625Z[0m [32m INFO[0m [2mcargo_tarpaulin[0m[2m:[0m Building project
+[2m2026-07-28T16:33:55.995428Z[0m [32m INFO[0m [2mcargo_tarpaulin::cargo[0m[2m:[0m Cleaning project
+[2m2026-07-28T16:34:52.430046Z[0m [32m INFO[0m [2mcargo_tarpaulin::process_handling[0m[2m:[0m running /home/runner/work/model-core.rs/model-core.rs/target/debug/deps/sweetrpg_model_core-e5ba175e5dd3a1ed
+[2m2026-07-28T16:34:52.430161Z[0m [32m INFO[0m [2mcargo_tarpaulin::process_handling[0m[2m:[0m Setting LLVM_PROFILE_FILE
+
+running 6 tests
+test models::auditable::tests::use_auditable ... ok
+test models::property::tests::use_property ... ok
+test models::tag::tests::use_tag ... ok
+test vo::auditable::tests::use_auditable_vo ... ok
+test vo::property::tests::use_property_vo ... ok
+test vo::tag::tests::use_tag_vo ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+[2m2026-07-28T16:34:52.433167Z[0m [32m INFO[0m [2mcargo_tarpaulin::statemachine::instrumented[0m[2m:[0m For binary: target/debug/deps/sweetrpg_model_core-e5ba175e5dd3a1ed
+[2m2026-07-28T16:34:52.433176Z[0m [32m INFO[0m [2mcargo_tarpaulin::statemachine::instrumented[0m[2m:[0m Generated: target/tarpaulin/profraws/sweetrpg_model_core-e5ba175e5dd3a1ed_17351448782820663067_0-10383.profraw
+[2m2026-07-28T16:34:52.433179Z[0m [32m INFO[0m [2mcargo_tarpaulin::statemachine::instrumented[0m[2m:[0m Merging coverage reports
+[2m2026-07-28T16:34:52.458923Z[0m [32m INFO[0m [2mcargo_tarpaulin::statemachine::instrumented[0m[2m:[0m Mapping coverage data to source
+[2m2026-07-28T16:34:52.565972Z[0m [32m INFO[0m [2mcargo_tarpaulin::report[0m[2m:[0m Coverage Results:
+[2m2026-07-28T16:34:52.566365Z[0m [32m INFO[0m [2mcargo_tarpaulin::report::html[0m[2m:[0m HTML report written to /home/runner/work/model-core.rs/model-core.rs/coverage/tarpaulin-report.html
+|| Tested/Total Lines:
+|| src/models/auditable.rs: 5/9
+|| 
+55.56% coverage, 5/9 lines covered
