@@ -8,6 +8,7 @@ on:
         paths:
             - "src/**/*.rs"
             - .rust-version
+            - ".github/workflows/**"
     workflow_dispatch:
     repository_dispatch:
         types:
@@ -17,6 +18,8 @@ jobs:
     tests:
         name: Build/test on ${{ matrix.name }}
         runs-on: ${{ matrix.os }}
+        permissions:
+            contents: write
         strategy:
             fail-fast: false
             matrix:
@@ -48,6 +51,58 @@ jobs:
                   use-cross: true
                   command: test
                   args: --verbose --release --target ${{ matrix.target }}
+            # Native host toolchain, not the musl cross target above - tarpaulin
+            # instruments locally and doesn't need the cross-compiled test run.
+            - name: Install cargo-tarpaulin
+              uses: taiki-e/install-action@v2
+              with:
+                  tool: cargo-tarpaulin
+            - name: Coverage (tarpaulin)
+              run: |
+                  mkdir -p coverage
+                  cargo tarpaulin --engine llvm --out Html --out Xml --output-dir coverage | tee coverage/tarpaulin-output.txt
+            - name: Coverage summary
+              run: |
+                  echo "## Rust coverage" >> "$GITHUB_STEP_SUMMARY"
+                  echo '```' >> "$GITHUB_STEP_SUMMARY"
+                  cat coverage/tarpaulin-output.txt >> "$GITHUB_STEP_SUMMARY"
+                  echo '```' >> "$GITHUB_STEP_SUMMARY"
+            - name: Upload coverage artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: coverage-report
+                  path: coverage/
+            # Warn-only: continue-on-error means this never blocks the job, only shows
+            # as a flagged step.
+            - name: Coverage threshold
+              continue-on-error: true
+              run: |
+                  LINE_RATE=$(grep -oE '<coverage [^>]*line-rate="[0-9.]+"' coverage/cobertura.xml \
+                      | grep -oE 'line-rate="[0-9.]+"' | grep -oE '[0-9.]+' || true)
+                  LINE_RATE=${LINE_RATE:-0}
+                  PCT=$(awk -v r="$LINE_RATE" 'BEGIN { printf "%.2f", r*100 }')
+                  echo "Coverage: ${PCT}%"
+                  awk -v pct="$PCT" 'BEGIN { exit !(pct+0 >= 0) }'
+            # Written into coverage/ so the publish step below carries it to GitHub Pages.
+            # destination_dir: coverage, not the root, since the docs job below already
+            # publishes to the gh-pages root with no destination_dir of its own -
+            # colliding there would wipe one or the other on every run.
+            - name: Coverage badge
+              continue-on-error: true
+              run: |
+                  LINE_RATE=$(grep -oE '<coverage [^>]*line-rate="[0-9.]+"' coverage/cobertura.xml \
+                      | grep -oE 'line-rate="[0-9.]+"' | grep -oE '[0-9.]+' || true)
+                  LINE_RATE=${LINE_RATE:-0}
+                  PCT=$(awk -v r="$LINE_RATE" 'BEGIN { printf "%.2f", r*100 }')
+                  COLOR=$(awk -v p="$PCT" 'BEGIN { if (p>=80) print "brightgreen"; else if (p>=50) print "yellow"; else print "red" }')
+                  printf '{"schemaVersion":1,"label":"coverage","message":"%s%%","color":"%s"}\n' \
+                      "$PCT" "$COLOR" > coverage/coverage-badge.json
+            - name: Publish coverage
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./coverage
+                  destination_dir: coverage
             - name: Bump version and push tag
               id: bump_version
               uses: anothrNick/github-tag-action@v1
@@ -90,11 +145,15 @@ jobs:
             - name: Make docs
               run: |
                   cargo doc
+            # keep_files: true - without it, this root-level publish (no destination_dir)
+            # wipes the whole branch by default, deleting the tests job's coverage/
+            # subfolder that ran moments earlier in the same workflow.
             - name: Publish docs
               uses: peaceiris/actions-gh-pages@v4
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./target/doc/sweetrpg_model_core/
+                  keep_files: true
 
 #    release:
 #        needs: [tests]
