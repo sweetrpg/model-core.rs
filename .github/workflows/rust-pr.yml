@@ -47,7 +47,7 @@ jobs:
               command: test
               args: --verbose --release --target ${{ matrix.target }}
           - name: Install cargo-tarpaulin
-            uses: taiki-e/install-action@v2
+            uses: taiki-e/install-action@v2.85.5
             with:
               tool: cargo-tarpaulin
           - name: Coverage (tarpaulin)

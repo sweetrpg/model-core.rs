@@ -54,7 +54,7 @@ jobs:
             # Native host toolchain, not the musl cross target above - tarpaulin
             # instruments locally and doesn't need the cross-compiled test run.
             - name: Install cargo-tarpaulin
-              uses: taiki-e/install-action@v2
+              uses: taiki-e/install-action@v2.85.5
               with:
                   tool: cargo-tarpaulin
             - name: Coverage (tarpaulin)
