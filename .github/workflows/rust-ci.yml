@@ -29,7 +29,7 @@ jobs:
                       target: x86_64-unknown-linux-musl
 
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@v7
             - name: Get language version
               id: get_lang_version
               run: |
@@ -131,7 +131,7 @@ jobs:
         runs-on: ubuntu-latest
         concurrency: docs
         steps:
-            - uses: actions/checkout@v6
+            - uses: actions/checkout@v7
             - name: Get language version
               id: get_lang_version
               run: |
@@ -161,7 +161,7 @@ jobs:
 #        permissions:
 #            contents: write
 #        steps:
-#            - uses: actions/checkout@v6
+#            - uses: actions/checkout@v7
 #              with:
 #                  fetch-depth: 0
 #            - name: Install Rust
